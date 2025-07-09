@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personal Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #020e46;
+    }
+    input, button {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    .expense-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+    .expense-item button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+    }
+    #total {
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Personal Expense Tracker</h1>
+
+  <div>
+    <label>Expense Name:</label><br>
+    <input type="text" id="expense-name" placeholder="e.g., Groceries"><br>
+
+    <label>Amount:</label><br>
+    <input type="number" id="expense-amount" placeholder="e.g., 500"><br>
+
+    <button onclick="addExpense()">Add Expense</button>
+  </div>
+
+  <h2>Expenses</h2>
+  <div id="expense-list"></div>
+
+  <div id="total">Total Spent: KES 0</div>
+
+  <script>
+    // Array to store all expenses
+    const expenses = [];
+
+    // Add expense from input fields
+    function addExpense() {
+      const nameInput = document.getElementById('expense-name');
+      const amountInput = document.getElementById('expense-amount');
+      const name = nameInput.value.trim();
+      const amount = parseFloat(amountInput.value.trim());
+
+      // Validation
+      if (!name || isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid expense name and a positive amount.');
+        return;
+      }
+
+      // Add to expenses array
+      expenses.push({ name, amount });
+
+      // Clear input fields
+      nameInput.value = '';
+      amountInput.value = '';
+
+      // Update display
+      updateDisplay();
+    }
+
+    // Delete an expense by index
+    function deleteExpense(index) {
+      expenses.splice(index, 1);
+      updateDisplay();
+    }
+
+    // Update the list and total display
+    function updateDisplay() {
+      const listContainer = document.getElementById('expense-list');
+      const totalContainer = document.getElementById('total');
+
+      // Clear the list
+      listContainer.innerHTML = '';
+
+      // Rebuild list
+      expenses.forEach((expense, index) => {
+        const item = document.createElement('div');
+        item.className = 'expense-item';
+        item.innerHTML = `
+          <span>${expense.name}: KES ${expense.amount.toLocaleString()}</span>
+          <button onclick="deleteExpense(${index})">Delete</button>
+        `;
+        listContainer.appendChild(item);
+      });
+
+      // Calculate total
+      const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+      totalContainer.textContent = `Total Spent: KES ${total.toLocaleString()}`;
+    }
+  </script>
+
+</body>
+</html>
